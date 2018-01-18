@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+{% load static %}
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link href='http://fonts.googleapis.com/css?family=Oswald:400,700,300|Bitter:400,700,400italic' rel='stylesheet' type='text/css'>
+<script src="{% static 'cook/javascript/jquery.min.js' %}" type="text/javascript"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $("#p").hide();
+  $("#bu").mouseover(function(){
+  $("#p").toggle();
+  });
+  $("#bu").mouseout(function(){
+  $("#p").hide();
+  });
+});
+</script>
+<!-- Mobile Specific Metas -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<!-- CSS -->
+<!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<link href="{% static 'cook/css/style.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'cook/css/responsive.css' %}" rel="stylesheet" type="text/css">
+
+
+<title>iCOOK食谱</title>
+</head>
+<body>
+
+<!-- START CONTENT -->
+<div id="box">
+	<div class="container">
+<!-- START HEADER -->
+<div class="columns one">
+	<div id="header">
+    	<div id="logo"><a href="{% url 'cook:index' %}">iCOOK</a></div>
+
+        <ul class="menu">
+        	<li><a href="{% url 'cook:index' %}">主页</a></li>
+            <li><a class="active" href="{% url 'cook:recipes' 'all' %}">食谱</a></li>
+            <li><a href="{% url 'cook:about' %}">简介</a></li>
+            {% if request.user.is_authenticated %}
+                <li><div id="bu" align="right" class="button2">
+                    <a style='color: orange' href="{% url 'cook:person' %}">消息({{ count }})</a>
+                    {{ user.nick_name }}▼
+                <p id="p"><a style="color: #00a0dc;" onmouseover="this.style.textDecoration='underline' " onmouseout="this.style.textDecoration='none' " href="{% url 'cook:person' %}">个人中心</a>
+                <a style="color: #00a0dc;" onmouseover="this.style.textDecoration='underline' " onmouseout="this.style.textDecoration='none' " href="{% url 'users:logout' %}">注销</a></p>
+                </div></li>
+            {% else %}
+                <li><a href="{% url 'users:login' %}">登陆</a>/
+                <a href="{% url 'users:register' %}">注册</a></li>
+            {% endif %}
+        </ul>
+    <div class="navigation">
+      <form action="http://wp.red-sky.pl/">
+        <select class="navigationmicro" name="myDestination" onChange="ob=this.form.myDestination; window.location.href=ob.options[ob.selectedIndex].value;">
+          <option value="#">- 食谱 -&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-{% if request.user.is_authenticated %}您好,{{ user.nick_name }}{% else %}未登录{% endif %}-</option>
+          <option value="{% url 'cook:index' %}">主页</option>
+          <option value="{% url 'cook:recipes' 'all' %}">食谱</option>
+          <option value="{% url 'cook:about' %}">简介</option>
+            {% if request.user.is_authenticated %}
+            <option value="{% url 'cook:person' %}">{{ user.nick_name }}的个人中心</option>
+            <option value="{% url 'users:logout' %}">注销</option>
+            {% else %}
+            <option value="{% url 'users:login' %}">登陆</option>
+            <option value="{% url 'users:register' %}">注册</option>
+            {% endif %}
+        </select>
+      </form>
+      <div class="clear"></div>
+    </div>
+      <br>
+    </div>
+    	<div class="clear"></div>
+</div>
+<!-- END HEADER -->
+
+<!-- START HINTS -->
+<div class="hint columns one">
+	<form action="{% url 'cook:search' %}" method="post">
+    {% csrf_token %}
+    <input type="text" class="searchline" name="search" placeholder="请输入想要搜索的内容后，按ENTER进行搜索">
+    </form>
+</div>
+<!-- END HINTS -->
+
+<!-- START FILTER -->
+<div class="one columns filter">
+<h2>分类:</h2>
+    <div class="center">
+        <ul class="pagin">
+            <li><a {% ifequal foodstyle 'all' %} class="active" {% endifequal %} href="{% url 'cook:recipes' 'all' %}">全部</a></li>
+            <li><a {% ifequal foodstyle 'meet' %} class="active" {% endifequal %} href="{% url 'cook:recipes' 'meet' %}">肉类</a></li>
+            <li><a {% ifequal foodstyle 'vegt' %} class="active" {% endifequal %} href="{% url 'cook:recipes' 'vegt' %}">素食</a></li>
+            <li><a {% ifequal foodstyle 'rice' %} class="active" {% endifequal %} href="{% url 'cook:recipes' 'rice' %}">主食</a></li>
+            <li><a {% ifequal foodstyle 'cold' %} class="active" {% endifequal %} href="{% url 'cook:recipes' 'cold' %}">凉菜</a></li>
+            <li><a {% ifequal foodstyle 'soup' %} class="active" {% endifequal %}   href="{% url 'cook:recipes' 'soup' %}">汤</a></li>
+            <li><a {% ifequal foodstyle 'drink' %} class="active" {% endifequal %} href="{% url 'cook:recipes' 'drink' %}">饮品</a></li>
+            <li><a {% ifequal foodstyle 'else' %} class="active" {% endifequal %} href="{% url 'cook:recipes' 'else' %}">其他</a></li>
+        </ul>
+    </div>
+    <div class="clear"></div>
+</div>
+<!-- END FILTER -->
+
+<!-- START CONTENT -->
+<div class="one columns filter">
+    <h6>排序方式:&nbsp;&nbsp;&nbsp;
+    <a href="?order_by=" {% if ordering %} class="active" {% endif %} >{% if not ordering %}↓{% endif %}默认{% if not ordering %}↓{% endif %}</a>&nbsp;&nbsp;
+    <a {% if not ordering %} class="active" {% endif %}  href="?order_by=-a_shouchang">{% if ordering %}↓{% endif %}收藏量{% if ordering %}↓{% endif %}</a></h6>
+</div>
+<div class="recipes">
+{% if all_articles %}
+    {% for arti in all_articles %}
+    <div class="columns four">
+        <div class="image"><a href="{% url 'cook:single' arti.id %}"><img src="{{ MEDIA_URL }}{{ arti.a_picture }}" alt="salad" /></a></div>
+        <h2><a href="{% url 'cook:single' arti.id %}">{{ arti.a_name }}</a></h2>
+    </div>
+    {% endfor %}
+{% endif %}
+</div>
+<!-- END CONTENT -->
+<br><br><br>
+<!-- START PAGINATION -->
+
+<div class="center">
+    <ul class="pagin">
+        {% ifequal page1 1 %}
+            {% for apage in all_articles.paginator.page_range %}
+                <li><a {% ifequal apage all_articles.number %} class="active" {% endifequal %} href="?page={{ apage }}&order_by={{ ordering }}">{{ apage }}</a></li>
+            {% endfor %}
+        {% else %}
+            {% ifequal page2 1 %}
+                <li><a href="?page=1&order_by={{ ordering }}">1</a></li>
+                <li><a class="none">...</a></li>
+            {% endifequal %}
+            {% ifequal page2 2 %}
+                <li><a href="?page=1&order_by={{ ordering }} ">1</a></li>
+                <li><a class="none">...</a></li>
+            {% endifequal %}
+
+            {% for apage in i %}
+                <li><a {% ifequal apage all_articles.number %} class="active" {% endifequal %} href="?page={{ apage }}&order_by={{ ordering }} ">{{ apage }}</a></li>
+            {% endfor %}
+
+            {% ifequal page2 2 %}
+                <li><a class="none">...</a></li>
+                <li><a href="?page={{ all_articles.paginator.num_pages }}&order_by={{ ordering }} ">{{ all_articles.paginator.num_pages }}</a></li>
+            {% endifequal %}
+            {% ifequal page2 3 %}
+                <li><a class="none">...</a></li>
+                <li><a href="?page={{ all_articles.paginator.num_pages }}&order_by={{ ordering }} ">{{ all_articles.paginator.num_pages }}</a></li>
+            {% endifequal %}
+        {% endifequal %}
+    </ul>
+    <br><br>
+{% ifequal t 1 %}
+    <form action="" class="pagin" method="get">
+        <p>跳到第：
+        <input type="text" class="numpage" name="page" />页
+        <a><input type="submit" class="btn" value="确定" /></a>  </p>
+    </form>
+{% endifequal %}
+</div>
+<!-- END PAGINATION -->
+<br>
+
+<div class="clear"></div>
+
+<!-- START FOOTER -->
+<div id="footer">
+<p> Have a good day ! </p>
+</div>
+<!-- END FOOTER -->
+
+	</div>
+</div>
+<!-- END CONTENT -->
+
+</body>
+</html>

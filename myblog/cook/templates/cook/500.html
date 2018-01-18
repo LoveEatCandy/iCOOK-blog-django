@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes" />
+{% load static %}
+    <title>500</title>
+</head>
+<body>
+<div align="center">
+<img src="{% static 'cook/images/500.png' %}">
+<a href="{% url 'cook:index' %}">返回主页</a>
+</div>
+</body>
+</html>

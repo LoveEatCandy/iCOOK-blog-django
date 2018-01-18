@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+{% load static %}
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link href='http://fonts.googleapis.com/css?family=Oswald:400,700,300|Bitter:400,700,400italic' rel='stylesheet' type='text/css'>
+<script src="{% static 'cook/javascript/jquery.min.js' %}" type="text/javascript"></script>
+<!-- Mobile Specific Metas -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<!-- CSS -->
+<!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<link href="{% static 'cook/css/style.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'cook/css/responsive.css' %}" rel="stylesheet" type="text/css">
+
+
+<title>iCOOK食谱</title>
+</head>
+<body>
+
+<!-- START CONTENT -->
+<div id="box">
+	<div class="container">
+<!-- START HEADER -->
+<div class="columns one">
+	<div id="header">
+    	<div id="logo"><a href="{% url 'cook:index' %}">iCOOK</a></div>
+
+        <ul class="menu">
+        	<li><a href="{% url 'cook:index' %}">主页</a></li>
+            <li><a href="{% url 'cook:recipes' 'all' %}">食谱</a></li>
+            <li><a href="{% url 'cook:about' %}">简介</a></li>
+        </ul>
+    <div class="navigation">
+      <form action="http://wp.red-sky.pl/">
+        <select class="navigationmicro" name="myDestination" onChange="ob=this.form.myDestination; window.location.href=ob.options[ob.selectedIndex].value;">
+          <option value="#">- 个人中心 -&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-{% if request.user.is_authenticated %}您好,{{ user.nick_name }}{% else %}未登录{% endif %}-</option>
+          <option value="{% url 'cook:index' %}">主页</option>
+          <option value="{% url 'cook:recipes' 'all' %}">食谱</option>
+          <option value="{% url 'cook:about' %}">简介</option>
+        </select>
+      </form>
+      <div class="clear"></div>
+    </div>
+      <br>
+    </div>
+    	<div class="clear"></div>
+</div>
+<!-- END HEADER -->
+
+<!-- START HINTS -->
+<div class="hint columns one" >
+    <h2 align="center">个人信息</h2><br>
+        <p style="font-size: 10px" align="center">用户名：{{ user.username }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        昵称：{{ user.nick_name }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        Email：{{ user.email }}</p>
+</div>
+<!-- END HINTS -->
+<div class="clear"></div>
+<br><br>
+<!-- START CONTENT -->
+<div class="columns two-thirds">
+<h2 align="center">我的收藏</h2><br>
+<div class="recipes">
+{% if all_fav %}
+    {% for fav in all_fav %}
+    <div class="columns five">
+        <div class="image"><a href="{% url 'cook:single' fav.id %}"><img src="{{ MEDIA_URL }}{{ fav.a_picture }}" alt="salad" /></a></div>
+        <h2><a href="{% url 'cook:single' fav.id %}">{{ fav.a_name }}</a></h2>
+    </div>
+    {% endfor %}
+{% else %}
+    <p align="center">您还没有收藏</p>
+{% endif %}
+</div>
+<!-- END CONTENT -->
+<br><br><br>
+<!-- START PAGINATION -->
+<div class="center">
+    <ul class="pagin">
+        {% ifequal page1 1 %}
+            {% for apage in all_fav.paginator.page_range %}
+                <li><a {% ifequal apage all_fav.number %} class="active" {% endifequal %} href="?page={{ apage }}">{{ apage }}</a></li>
+            {% endfor %}
+        {% else %}
+            {% ifequal page2 1 %}
+                <li><a href="?page=1">1</a></li>
+                <li><a class="none">...</a></li>
+            {% endifequal %}
+            {% ifequal page2 2 %}
+                <li><a href="?page=1">1</a></li>
+                <li><a class="none">...</a></li>
+            {% endifequal %}
+
+            {% for apage in i %}
+                <li><a {% ifequal apage all_fav.number %} class="active" {% endifequal %} href="?page={{ apage }}">{{ apage }}</a></li>
+            {% endfor %}
+
+            {% ifequal page2 2 %}
+                <li><a class="none">...</a></li>
+                <li><a href="?page={{ all_fav.paginator.num_pages }}">{{ all_fav.paginator.num_pages }}</a></li>
+            {% endifequal %}
+            {% ifequal page2 3 %}
+                <li><a class="none">...</a></li>
+                <li><a href="?page={{ all_fav.paginator.num_pages }}">{{ all_fav.paginator.num_pages }}</a></li>
+            {% endifequal %}
+        {% endifequal %}
+    </ul>
+    <br><br>
+{% ifequal t 1 %}
+    <form action="" class="pagin" method="get">
+        <p>跳到第：
+        <input type="text" class="numpage" name="page" />页
+        <a><input type="submit" class="btn" value="确定" /></a>  </p>
+    </form>
+{% endifequal %}
+</div></div>
+<!-- END PAGINATION -->
+<div class="columns one-third_last sidebar">
+<div class="title"><h2 align="center">消息</h2></div>
+    <h4>共({{ all_reply.count }})条：</h4>
+    {% for reply in all_reply %}
+        <p>{{ reply.from_who.nick_name }}&nbsp;在&nbsp;<a href="{% url 'cook:single' reply.comment.article.id %}">{{ reply.comment.article }}</a>&nbsp;回复您:<br>"{{ reply.reply_text }}"</p>
+        <p style="font-size: 10px;color: grey">{{ reply.time }}</p>
+        <br><br>
+    {% endfor %}
+</div>
+<br>
+
+<div class="clear"></div>
+
+<!-- START FOOTER -->
+<div id="footer">
+<p> Have a good day ! </p>
+</div>
+<!-- END FOOTER -->
+
+	</div>
+</div>
+<!-- END CONTENT -->
+
+</body>
+</html>
