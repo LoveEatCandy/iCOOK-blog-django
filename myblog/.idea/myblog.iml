@@ -15,8 +15,6 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="jdk" jdkName="Python 3.6" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="c0o3ao" />
-    <orderEntry type="module" module-name="ftmp_63" />
   </component>
   <component name="PackageRequirementsSettings">
     <option name="requirementsPath" value="E:\Tools\python\python.exe" />

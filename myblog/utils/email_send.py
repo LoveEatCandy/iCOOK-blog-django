@@ -29,7 +29,7 @@ def send_register_email(email,send_type='register'):
 
     if send_type == 'register':
         email_title = 'iCOOK美食博客注册激活链接'
-        email_body = 'iCOOK美食博客注册激活链接，请点击下面的链接激活你的账号：http://192.168.0.108:8000/user/active/{0}'.format(code1)
+        email_body = 'iCOOK美食博客注册激活链接，请点击下面的链接激活你的账号：http://www.loving.photography/user/active/{0}'.format(code1)
 
         send_status = send_mail(email_title,email_body,EMAIL_FROM,[email])
         if send_status:
@@ -38,7 +38,7 @@ def send_register_email(email,send_type='register'):
             return False
     elif send_type == 'forget':
         email_title = 'iCOOK美食博客密码重置链接'
-        email_body = 'iCOOK美食博客密码重置链接，请点击下面的链接修改你的账号：http://192.168.0.108:8000/user/reset/{0}'.format(code1)
+        email_body = 'iCOOK美食博客密码重置链接，请点击下面的链接修改你的账号：http://www.loving.photography/user/reset/{0}'.format(code1)
 
         send_status = send_mail(email_title, email_body, EMAIL_FROM, [email])
         if send_status:
