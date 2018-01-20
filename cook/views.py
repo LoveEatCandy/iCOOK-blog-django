@@ -32,7 +32,7 @@ def recipes(request,foodstyle):
         ordering = ''
     if ordering:
         all_articles=all_articles.order_by(ordering)
-    pages = Paginator(all_articles,4)
+    pages = Paginator(all_articles,8)
     page = request.GET.get('page','1')
     page1,page2,i=0,0,0
     pagex = int(page)
